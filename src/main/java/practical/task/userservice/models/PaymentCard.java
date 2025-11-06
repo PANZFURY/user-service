@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Table(name = "payment_cards")
 @NoArgsConstructor
 @Data
-public class PaymentCard {
+public class PaymentCard extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
