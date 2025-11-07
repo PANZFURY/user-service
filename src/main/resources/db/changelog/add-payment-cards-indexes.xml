@@ -1,0 +1,14 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="add-payment-cards-indexes" author="postgres">
+        <addUniqueConstraint
+                tableName="payment_cards"
+                columnNames="number"
+                constraintName="uq_payment_cards_number"/>
+        <createIndex tableName="payment_cards" indexName="idx_payment_cards_user_id">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
