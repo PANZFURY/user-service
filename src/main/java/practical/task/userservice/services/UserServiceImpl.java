@@ -1,11 +1,14 @@
 package practical.task.userservice.services;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import practical.task.userservice.dtos.UserResponse;
 import practical.task.userservice.dtos.requests.UserCreateDto;
 import practical.task.userservice.dtos.requests.UserUpdateDto;
@@ -39,9 +42,17 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserResponse(user);
     }
 
+    @Transactional
     @Override
     public UserResponse createUser(UserCreateDto userCreateDto) {
-        return null;
+        User user = userMapper.fromUserCreateDto(userCreateDto);
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new EntityExistsException("User already exists");
+        }
+
+        return userMapper.toUserResponse(user);
     }
 
     @Override
