@@ -16,6 +16,9 @@ import practical.task.userservice.mappers.UserMapper;
 import practical.task.userservice.models.User;
 import practical.task.userservice.repositories.UserRepository;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -55,9 +58,30 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserResponse(user);
     }
 
+    @Transactional
     @Override
     public UserResponse updateUserById(Long id, UserUpdateDto userUpdateDto) {
-        return null;
+        User user = userRepository.findUserById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User was not found"));
+
+        String newEmail = userUpdateDto.email();
+        if (newEmail != null && !newEmail.equals(user.getEmail())) {
+            userRepository.findByEmail(newEmail)
+                    .ifPresent(uf -> {throw new EntityExistsException("Email has already been used");});
+        }
+
+        user.setName(resolveIfNotNull(userUpdateDto.name(), user.getName()));
+        user.setSurname(resolveIfNotNull(userUpdateDto.surname(), user.getSurname()));
+        user.setBirthDate(resolveIfNotNull(userUpdateDto.birthDate(), user.getBirthDate()));
+        user.setEmail(resolveIfNotNull(userUpdateDto.email(), user.getEmail()));
+
+        userRepository.save(user);
+
+        return userMapper.toUserResponse(user);
+    }
+
+    private <K> K resolveIfNotNull(K newValue, K oldValue) {
+        return newValue != null ? newValue : oldValue;
     }
 
     @Override
