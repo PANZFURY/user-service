@@ -16,9 +16,6 @@ import practical.task.userservice.mappers.UserMapper;
 import practical.task.userservice.models.User;
 import practical.task.userservice.repositories.UserRepository;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -84,8 +81,17 @@ public class UserServiceImpl implements UserService {
         return newValue != null ? newValue : oldValue;
     }
 
+    @Transactional
     @Override
     public void deleteUserById(Long id) {
+        User user = userRepository.findUserById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User was not found"));
 
+        user.setActive(false);
+        userRepository.save(user);
+
+        /*
+        userRepository.delete(user);
+         */
     }
 }
