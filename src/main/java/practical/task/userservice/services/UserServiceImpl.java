@@ -1,5 +1,6 @@
 package practical.task.userservice.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getOneById(Long id) {
-        return null;
+        User user = userRepository.findUserById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        return userMapper.toUserResponse(user);
     }
 
     @Override
