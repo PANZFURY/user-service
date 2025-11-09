@@ -3,7 +3,7 @@ package practical.task.userservice.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import practical.task.userservice.dtos.UserCreateDto;
+import practical.task.userservice.dtos.requests.UserCreateDto;
 import practical.task.userservice.dtos.UserResponse;
 import practical.task.userservice.models.User;
 

@@ -1,4 +1,4 @@
-package practical.task.userservice.dtos;
+package practical.task.userservice.dtos.requests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
