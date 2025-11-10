@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import practical.task.userservice.dtos.requests.paymentCardDtos.CreatePaymentCardDto;
 import practical.task.userservice.dtos.requests.paymentCardDtos.UpdatePaymentCardDto;
 import practical.task.userservice.dtos.responses.PaymentCardResponse;
@@ -48,6 +49,7 @@ public class PaymentCardServiceImpl implements PaymentCardService{
         return paymentCardMapper.toPaymentCardResponse(paymentCard);
     }
 
+    @Transactional
     @Override
     public PaymentCardResponse createPaymentCard(CreatePaymentCardDto createPaymentCardDto) {
         paymentCardRepository.findPaymentCardByNumber(createPaymentCardDto.number())
@@ -67,6 +69,7 @@ public class PaymentCardServiceImpl implements PaymentCardService{
         return paymentCardMapper.toPaymentCardResponse(paymentCardRepository.save(paymentCard));
     }
 
+    @Transactional
     @Override
     public PaymentCardResponse updatePaymentCardById(Long id, UpdatePaymentCardDto updatePaymentCardDto) {
         PaymentCard paymentCard = paymentCardRepository.findPaymentCardById(id)
@@ -95,9 +98,17 @@ public class PaymentCardServiceImpl implements PaymentCardService{
     }
 
 
-
+    @Transactional
     @Override
     public void deletePaymentCardById(Long id) {
+        PaymentCard paymentCard = paymentCardRepository.findPaymentCardById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Payment card was not found"));
 
+        paymentCard.setActive(false);
+        paymentCardRepository.save(paymentCard);
+
+        /*
+        paymentCardRepository.delete(paymentCard);
+         */
     }
 }

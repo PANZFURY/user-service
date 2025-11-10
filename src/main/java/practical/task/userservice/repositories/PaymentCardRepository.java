@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import practical.task.userservice.models.PaymentCard;
+import practical.task.userservice.models.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,5 +36,6 @@ public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long> 
     @Query("UPDATE PaymentCard pc SET pc.active = :active WHERE pc.id = :id")
     void updateActiveStatus(@Param("id") Long id, @Param("active") boolean active);
 
+    List<PaymentCard> findAllByUser(User user);
 }
 

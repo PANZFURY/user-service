@@ -13,20 +13,28 @@ import practical.task.userservice.dtos.responses.UserResponse;
 import practical.task.userservice.dtos.requests.userDtos.UserCreateDto;
 import practical.task.userservice.dtos.requests.userDtos.UserUpdateDto;
 import practical.task.userservice.mappers.UserMapper;
+import practical.task.userservice.models.PaymentCard;
 import practical.task.userservice.models.User;
+import practical.task.userservice.repositories.PaymentCardRepository;
 import practical.task.userservice.repositories.UserRepository;
 import practical.task.userservice.util.CreateEntityHelper;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PaymentCardRepository paymentCardRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository,
+                           UserMapper userMapper,
+                           PaymentCardRepository paymentCardRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.paymentCardRepository = paymentCardRepository;
     }
 
     @Override
@@ -85,6 +93,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User was not found"));
 
         user.setActive(false);
+        List<PaymentCard> paymentCards = paymentCardRepository.findAllByUser(user);
+        paymentCards.forEach(paymentCard -> {paymentCard.setActive(false);});
+
         userRepository.save(user);
 
         /*
