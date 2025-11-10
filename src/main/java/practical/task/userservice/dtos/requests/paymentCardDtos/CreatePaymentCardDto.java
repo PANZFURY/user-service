@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 public record CreatePaymentCardDto(
 
+        @NotNull(message = "User id is required")
         Long userId,
 
         @NotBlank(message = "Number is required")
