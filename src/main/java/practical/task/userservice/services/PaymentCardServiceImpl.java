@@ -1,5 +1,6 @@
 package practical.task.userservice.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +34,10 @@ public class PaymentCardServiceImpl implements PaymentCardService{
 
     @Override
     public PaymentCardResponse getOneById(Long id) {
-        return null;
+        PaymentCard paymentCard = paymentCardRepository
+                .findPaymentCardById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Payment card was not found"));
+        return paymentCardMapper.toPaymentCardResponse(paymentCard);
     }
 
     @Override
