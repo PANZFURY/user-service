@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="postgres"  id="edit-column-number-payment-cards">
+        <preConditions onFail="MARK_RAN">
+                <columnExists tableName="payment_cards" columnName="number"/>
+        </preConditions>
+        <modifyDataType tableName="payment_cards" columnName="number" newDataType="VARCHAR(255)"/>
+    </changeSet>
+</databaseChangeLog>
