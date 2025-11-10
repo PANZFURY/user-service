@@ -27,6 +27,9 @@ public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long> 
 
     Page<PaymentCard> findAll(Specification<PaymentCard> spec, Pageable pageable);
 
+    @Query("SELECT pc FROM PaymentCard pc WHERE pc.number LIKE :number")
+    Optional<PaymentCard> findPaymentCardByNumber(String number);
+
     @Modifying
     @Transactional
     @Query("UPDATE PaymentCard pc SET pc.active = :active WHERE pc.id = :id")
