@@ -2,12 +2,12 @@ package practical.task.userservice.dtos.requests.paymentCardDtos;
 
 import java.time.LocalDate;
 
-public class UpdatePaymentCardDto {
+public record UpdatePaymentCardDto(
+        Long userId,
 
-    private Long userId;
+        String number,
 
-    private String number;
-
-    private LocalDate expirationDate;
+        LocalDate expirationDate
+) {
 
 }
