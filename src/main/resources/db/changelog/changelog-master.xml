@@ -3,6 +3,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <include file="db/changelog/edit-column-number-in-payment-cards.xml"/>
     <include file="db/changelog/create-users.xml"/>
     <include file="db/changelog/create-payment-cards.xml"/>
     <include file="db/changelog/add-columns-created-at-and-updated-at.xml"/>
