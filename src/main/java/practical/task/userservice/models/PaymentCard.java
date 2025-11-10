@@ -22,7 +22,7 @@ public class PaymentCard extends Auditable{
 
     @NonNull
     @Column(unique = true)
-    private Long number;
+    private String number;
 
     private String holder;
 
