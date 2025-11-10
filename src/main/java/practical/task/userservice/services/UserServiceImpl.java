@@ -15,6 +15,7 @@ import practical.task.userservice.dtos.requests.userDtos.UserUpdateDto;
 import practical.task.userservice.mappers.UserMapper;
 import practical.task.userservice.models.User;
 import practical.task.userservice.repositories.UserRepository;
+import practical.task.userservice.util.CreateEntityHelper;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -67,18 +68,14 @@ public class UserServiceImpl implements UserService {
                     .ifPresent(uf -> {throw new EntityExistsException("Email has already been used");});
         }
 
-        user.setName(resolveIfNotNull(userUpdateDto.name(), user.getName()));
-        user.setSurname(resolveIfNotNull(userUpdateDto.surname(), user.getSurname()));
-        user.setBirthDate(resolveIfNotNull(userUpdateDto.birthDate(), user.getBirthDate()));
-        user.setEmail(resolveIfNotNull(userUpdateDto.email(), user.getEmail()));
+        user.setName(CreateEntityHelper.resolveIfNotNull(userUpdateDto.name(), user.getName()));
+        user.setSurname(CreateEntityHelper.resolveIfNotNull(userUpdateDto.surname(), user.getSurname()));
+        user.setBirthDate(CreateEntityHelper.resolveIfNotNull(userUpdateDto.birthDate(), user.getBirthDate()));
+        user.setEmail(CreateEntityHelper.resolveIfNotNull(userUpdateDto.email(), user.getEmail()));
 
         userRepository.save(user);
 
         return userMapper.toUserResponse(user);
-    }
-
-    private <K> K resolveIfNotNull(K newValue, K oldValue) {
-        return newValue != null ? newValue : oldValue;
     }
 
     @Transactional

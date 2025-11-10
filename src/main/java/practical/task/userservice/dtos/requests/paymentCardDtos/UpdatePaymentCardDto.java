@@ -7,7 +7,9 @@ public record UpdatePaymentCardDto(
 
         String number,
 
-        LocalDate expirationDate
+        LocalDate expirationDate,
+
+        Boolean active
 ) {
 
 }

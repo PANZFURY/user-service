@@ -15,6 +15,7 @@ import practical.task.userservice.models.PaymentCard;
 import practical.task.userservice.models.User;
 import practical.task.userservice.repositories.PaymentCardRepository;
 import practical.task.userservice.repositories.UserRepository;
+import practical.task.userservice.util.CreateEntityHelper;
 
 @Service
 public class PaymentCardServiceImpl implements PaymentCardService{
@@ -56,16 +57,44 @@ public class PaymentCardServiceImpl implements PaymentCardService{
         if (countCardsByUser >= 5) throw new RuntimeException("User can not have more than 5 cards");
 
         PaymentCard paymentCard = paymentCardMapper.fromPaymentCardCreateDto(createPaymentCardDto);
-        paymentCard.setUser(userRepository.findUserById(createPaymentCardDto.userId())
-                .orElseThrow(() -> new EntityNotFoundException("User was not found")));
+
+        User user = userRepository.findUserById(createPaymentCardDto.userId())
+                .orElseThrow(() -> new EntityNotFoundException("User was not found"));
+
+        paymentCard.setUser(user);
+        paymentCard.setHolder(user.getSurname() + " " + user.getName());
 
         return paymentCardMapper.toPaymentCardResponse(paymentCardRepository.save(paymentCard));
     }
 
     @Override
     public PaymentCardResponse updatePaymentCardById(Long id, UpdatePaymentCardDto updatePaymentCardDto) {
-        return null;
+        PaymentCard paymentCard = paymentCardRepository.findPaymentCardById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Payment card was not found"));
+
+        if (updatePaymentCardDto.number() != null) {
+            paymentCardRepository.findPaymentCardByNumber(updatePaymentCardDto.number())
+                    .filter(existing -> !existing.getId().equals(id))
+                    .ifPresent(c -> {throw new EntityExistsException("Number is already used");});
+        }
+
+        if (updatePaymentCardDto.userId() != null) {
+            User user = userRepository.findUserById(updatePaymentCardDto.userId())
+                    .orElseThrow(() -> new EntityNotFoundException("User with id: " + updatePaymentCardDto.userId() + " was not found"));
+            paymentCard.setUser(user);
+            paymentCard.setHolder(user.getSurname() + " " + user.getName());
+        }
+
+        paymentCard.setNumber(CreateEntityHelper.resolveIfNotNull(updatePaymentCardDto.number(), paymentCard.getNumber()));
+        paymentCard.setActive(CreateEntityHelper.resolveIfNotNull(updatePaymentCardDto.active(), paymentCard.isActive()));
+        paymentCard.setExpirationDate(CreateEntityHelper.resolveIfNotNull(updatePaymentCardDto.expirationDate(), paymentCard.getExpirationDate()));
+
+        paymentCardRepository.save(paymentCard);
+
+        return paymentCardMapper.toPaymentCardResponse(paymentCard);
     }
+
+
 
     @Override
     public void deletePaymentCardById(Long id) {
