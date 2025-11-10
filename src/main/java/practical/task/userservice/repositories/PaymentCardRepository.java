@@ -1,5 +1,8 @@
 package practical.task.userservice.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +24,8 @@ public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long> 
 
     @Query(value = "SELECT COUNT(*) FROM payment_cards WHERE user_id = :userId", nativeQuery = true)
     long countByUserId(@Param("userId") Long userId);
+
+    Page<PaymentCard> findAll(Specification<PaymentCard> spec, Pageable pageable);
 
     @Modifying
     @Transactional
