@@ -1,12 +1,12 @@
-package practical.task.userservice.services;
+package practical.task.userservice.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import practical.task.userservice.dtos.requests.paymentCardDtos.CreatePaymentCardDto;
-import practical.task.userservice.dtos.requests.paymentCardDtos.UpdatePaymentCardDto;
-import practical.task.userservice.dtos.responses.PaymentCardResponse;
-import practical.task.userservice.models.PaymentCard;
+import practical.task.userservice.dto.request.paymentCardDto.CreatePaymentCardDto;
+import practical.task.userservice.dto.request.paymentCardDto.UpdatePaymentCardDto;
+import practical.task.userservice.dto.response.PaymentCardResponse;
+import practical.task.userservice.model.PaymentCard;
 
 public interface PaymentCardService {
 

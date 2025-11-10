@@ -1,4 +1,4 @@
-package practical.task.userservice.services;
+package practical.task.userservice.service;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -9,14 +9,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import practical.task.userservice.dtos.responses.UserResponse;
-import practical.task.userservice.dtos.requests.userDtos.UserCreateDto;
-import practical.task.userservice.dtos.requests.userDtos.UserUpdateDto;
-import practical.task.userservice.mappers.UserMapper;
-import practical.task.userservice.models.PaymentCard;
-import practical.task.userservice.models.User;
-import practical.task.userservice.repositories.PaymentCardRepository;
-import practical.task.userservice.repositories.UserRepository;
+import practical.task.userservice.dto.response.UserResponse;
+import practical.task.userservice.dto.request.userDto.UserCreateDto;
+import practical.task.userservice.dto.request.userDto.UserUpdateDto;
+import practical.task.userservice.mapper.UserMapper;
+import practical.task.userservice.model.PaymentCard;
+import practical.task.userservice.model.User;
+import practical.task.userservice.repository.PaymentCardRepository;
+import practical.task.userservice.repository.UserRepository;
 import practical.task.userservice.util.CreateEntityHelper;
 
 import java.util.List;

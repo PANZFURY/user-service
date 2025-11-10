@@ -1,12 +1,12 @@
-package practical.task.userservice.services;
+package practical.task.userservice.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import practical.task.userservice.dtos.responses.UserResponse;
-import practical.task.userservice.dtos.requests.userDtos.UserCreateDto;
-import practical.task.userservice.dtos.requests.userDtos.UserUpdateDto;
-import practical.task.userservice.models.User;
+import practical.task.userservice.dto.response.UserResponse;
+import practical.task.userservice.dto.request.userDto.UserCreateDto;
+import practical.task.userservice.dto.request.userDto.UserUpdateDto;
+import practical.task.userservice.model.User;
 
 public interface UserService {
 

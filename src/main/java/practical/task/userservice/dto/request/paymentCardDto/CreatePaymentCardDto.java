@@ -1,4 +1,4 @@
-package practical.task.userservice.dtos.requests.paymentCardDtos;
+package practical.task.userservice.dto.request.paymentCardDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

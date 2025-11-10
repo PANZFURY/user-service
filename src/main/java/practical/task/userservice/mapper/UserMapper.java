@@ -1,11 +1,11 @@
-package practical.task.userservice.mappers;
+package practical.task.userservice.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import practical.task.userservice.dtos.responses.UserResponse;
-import practical.task.userservice.dtos.requests.userDtos.UserCreateDto;
-import practical.task.userservice.models.User;
+import practical.task.userservice.dto.response.UserResponse;
+import practical.task.userservice.dto.request.userDto.UserCreateDto;
+import practical.task.userservice.model.User;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {

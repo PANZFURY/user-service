@@ -1,4 +1,4 @@
-package practical.task.userservice.models;
+package practical.task.userservice.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
