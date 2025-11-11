@@ -1,5 +1,6 @@
 package practical.task.userservice.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,9 +13,11 @@ import practical.task.userservice.dto.request.userDto.UserUpdateDto;
 import practical.task.userservice.dto.response.UserResponse;
 import practical.task.userservice.mapper.UserMapper;
 import practical.task.userservice.model.User;
+import practical.task.userservice.repository.PaymentCardRepository;
 import practical.task.userservice.repository.UserRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -27,6 +30,8 @@ class UserServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private UserMapper userMapper;
+    @Mock
+    private PaymentCardRepository paymentCardRepository;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -99,4 +104,31 @@ class UserServiceImplTest {
 
         assertThrows(EntityNotFoundException.class, () -> userService.getOneById(99L));
     }
+
+    @Test
+    void testUpdateUser_success() {
+        when(userRepository.findUserById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(updateDto.email())).thenReturn(Optional.empty());
+        when(userRepository.save(user)).thenReturn(user);
+        when(userMapper.toUserResponse(user)).thenReturn(userResponse);
+
+        UserResponse response = userService.updateUserById(1L, updateDto);
+
+        assertNotNull(response);
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void testUpdateUser_emailAlreadyExists() {
+        User anotherUser = new User();
+        anotherUser.setId(2L);
+        anotherUser.setEmail(updateDto.email());
+
+        when(userRepository.findUserById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(updateDto.email())).thenReturn(Optional.of(anotherUser));
+
+        assertThrows(EntityExistsException.class, () -> userService.updateUserById(1L, updateDto));
+        verify(userRepository, never()).save(any());
+    }
+
 }
