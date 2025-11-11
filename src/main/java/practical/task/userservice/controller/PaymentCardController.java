@@ -48,4 +48,11 @@ public class PaymentCardController {
     public ResponseEntity<PaymentCardResponse> updateUser(@PathVariable Long id, @RequestBody UpdatePaymentCardDto updatePaymentCardDto) {
         return ResponseEntity.ok(paymentCardService.updatePaymentCardById(id, updatePaymentCardDto));
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        paymentCardService.deletePaymentCardById(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
