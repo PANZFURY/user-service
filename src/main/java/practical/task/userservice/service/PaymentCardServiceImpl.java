@@ -35,9 +35,9 @@ public class PaymentCardServiceImpl implements PaymentCardService{
     }
 
     @Override
-    public Page<PaymentCardResponse> getAll(Specification<PaymentCard> spec, Pageable pageable) {
+    public Page<PaymentCardResponse> getAll(Pageable pageable) {
         return paymentCardRepository
-                .findAll(spec, pageable)
+                .findAll(pageable)
                 .map(paymentCardMapper::toPaymentCardResponse);
     }
 

@@ -1,11 +1,16 @@
 package practical.task.userservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import practical.task.userservice.dto.response.PaymentCardResponse;
+import practical.task.userservice.dto.response.UserResponse;
 import practical.task.userservice.service.PaymentCardService;
 
 @RestController("/api/card")
@@ -22,4 +27,17 @@ public class PaymentCardController {
     public ResponseEntity<PaymentCardResponse> getOne(@PathVariable Long id) {
         return ResponseEntity.ok(paymentCardService.getOneById(id));
     }
+
+    @GetMapping("/get/all")
+    public ResponseEntity<Page<PaymentCardResponse>> getAll(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String surname,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(paymentCardService.getAll(pageable));
+    }
+
 }
