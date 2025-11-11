@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import practical.task.userservice.dto.request.paymentCardDto.CreatePaymentCardDto;
+import practical.task.userservice.dto.request.paymentCardDto.UpdatePaymentCardDto;
 import practical.task.userservice.dto.response.PaymentCardResponse;
 import practical.task.userservice.service.PaymentCardService;
 
@@ -41,5 +42,10 @@ public class PaymentCardController {
     @PostMapping("/registration")
     public ResponseEntity<PaymentCardResponse> createPaymentCard(@RequestBody CreatePaymentCardDto createPaymentCardDto) {
         return ResponseEntity.ok(paymentCardService.createPaymentCard(createPaymentCardDto));
+    }
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<PaymentCardResponse> updateUser(@PathVariable Long id, @RequestBody UpdatePaymentCardDto updatePaymentCardDto) {
+        return ResponseEntity.ok(paymentCardService.updatePaymentCardById(id, updatePaymentCardDto));
     }
 }
