@@ -10,7 +10,7 @@ import practical.task.userservice.model.PaymentCard;
 
 public interface PaymentCardService {
 
-    Page<PaymentCardResponse> getAll(Specification<PaymentCard> spec, Pageable pageable);
+    Page<PaymentCardResponse> getAll(Pageable pageable);
     PaymentCardResponse getOneById(Long id);
     PaymentCardResponse createPaymentCard(CreatePaymentCardDto createPaymentCardDto);
     PaymentCardResponse updatePaymentCardById(Long id, UpdatePaymentCardDto updatePaymentCardDto);
