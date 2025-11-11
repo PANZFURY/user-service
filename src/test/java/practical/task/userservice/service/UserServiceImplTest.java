@@ -11,10 +11,10 @@ import practical.task.userservice.dto.request.userDto.UserUpdateDto;
 import practical.task.userservice.dto.response.UserResponse;
 import practical.task.userservice.mapper.UserMapper;
 import practical.task.userservice.model.User;
-import practical.task.userservice.repository.PaymentCardRepository;
 import practical.task.userservice.repository.UserRepository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -81,4 +81,14 @@ class UserServiceImplTest {
         verify(userMapper).toUserResponse(user);
     }
 
+    @Test
+    void testGetUserById_success() {
+        when(userRepository.findUserById(1L)).thenReturn(Optional.of(user));
+        when(userMapper.toUserResponse(user)).thenReturn(userResponse);
+
+        UserResponse response = userService.getOneById(1L);
+
+        assertEquals("Britney", response.name());
+        verify(userRepository).findUserById(1L);
+    }
 }
