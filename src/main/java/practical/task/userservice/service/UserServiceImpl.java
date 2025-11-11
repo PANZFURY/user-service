@@ -17,6 +17,7 @@ import practical.task.userservice.model.PaymentCard;
 import practical.task.userservice.model.User;
 import practical.task.userservice.repository.PaymentCardRepository;
 import practical.task.userservice.repository.UserRepository;
+import practical.task.userservice.specification.UserSpecification;
 import practical.task.userservice.util.CreateEntityHelper;
 
 import java.util.List;
@@ -38,7 +39,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserResponse> getAll(Specification<User> spec, Pageable pageable) {
+    public Page<UserResponse> getAll(String name, String surname, Pageable pageable) {
+        Specification<User> spec = Specification.<User>unrestricted()
+                .and(UserSpecification.hasName(name))
+                .and(UserSpecification.hasSurname(surname));
         return userRepository
                 .findAll(spec, pageable)
                 .map(userMapper::toUserResponse);

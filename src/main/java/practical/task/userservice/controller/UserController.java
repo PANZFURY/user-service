@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import practical.task.userservice.dto.request.userDto.UserCreateDto;
 import practical.task.userservice.dto.response.UserResponse;
 import practical.task.userservice.service.UserService;
 
@@ -36,6 +37,12 @@ public class UserController {
 
         return ResponseEntity.ok(userService.getAll(name, surname, pageable));
     }
+
+    @PostMapping("user/registration")
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserCreateDto userCreateDto) {
+        return ResponseEntity.ok(userService.createUser(userCreateDto));
+    }
+
 
 }
 
