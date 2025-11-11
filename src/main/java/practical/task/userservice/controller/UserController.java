@@ -12,7 +12,7 @@ import practical.task.userservice.dto.response.UserResponse;
 import practical.task.userservice.service.UserService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -22,12 +22,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/get/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<UserResponse> getOne(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getOneById(id));
     }
 
-    @GetMapping("/user/get/all")
+    @GetMapping("/get/all")
     public ResponseEntity<Page<UserResponse>> getAll(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String surname,
@@ -39,17 +39,17 @@ public class UserController {
         return ResponseEntity.ok(userService.getAll(name, surname, pageable));
     }
 
-    @PostMapping("user/registration")
+    @PostMapping("/registration")
     public ResponseEntity<UserResponse> createUser(@RequestBody UserCreateDto userCreateDto) {
         return ResponseEntity.ok(userService.createUser(userCreateDto));
     }
 
-    @PatchMapping("user/update/{id}")
+    @PatchMapping("/update/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateDto userUpdateDto) {
         return ResponseEntity.ok(userService.updateUserById(id, userUpdateDto));
     }
 
-    @DeleteMapping("user/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
         return ResponseEntity.noContent().build();
