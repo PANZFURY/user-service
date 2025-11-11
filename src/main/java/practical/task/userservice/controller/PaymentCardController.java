@@ -5,15 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import practical.task.userservice.dto.request.paymentCardDto.CreatePaymentCardDto;
 import practical.task.userservice.dto.response.PaymentCardResponse;
-import practical.task.userservice.dto.response.UserResponse;
 import practical.task.userservice.service.PaymentCardService;
 
-@RestController("/api/card")
+@RestController
+@RequestMapping("/api/card")
 public class PaymentCardController {
 
     private final PaymentCardService paymentCardService;
@@ -40,4 +38,8 @@ public class PaymentCardController {
         return ResponseEntity.ok(paymentCardService.getAll(pageable));
     }
 
+    @PostMapping("/registration")
+    public ResponseEntity<PaymentCardResponse> createPaymentCard(@RequestBody CreatePaymentCardDto createPaymentCardDto) {
+        return ResponseEntity.ok(paymentCardService.createPaymentCard(createPaymentCardDto));
+    }
 }
