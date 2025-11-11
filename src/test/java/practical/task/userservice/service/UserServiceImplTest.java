@@ -1,5 +1,6 @@
 package practical.task.userservice.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -90,5 +91,12 @@ class UserServiceImplTest {
 
         assertEquals("Britney", response.name());
         verify(userRepository).findUserById(1L);
+    }
+
+    @Test
+    void testGetUserById_notFound() {
+        when(userRepository.findUserById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> userService.getOneById(99L));
     }
 }
