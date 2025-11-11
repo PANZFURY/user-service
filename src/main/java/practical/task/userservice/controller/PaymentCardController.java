@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import practical.task.userservice.dto.request.paymentCardDto.CreatePaymentCardDto;
@@ -41,7 +42,8 @@ public class PaymentCardController {
 
     @PostMapping("/registration")
     public ResponseEntity<PaymentCardResponse> createPaymentCard(@RequestBody CreatePaymentCardDto createPaymentCardDto) {
-        return ResponseEntity.ok(paymentCardService.createPaymentCard(createPaymentCardDto));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(paymentCardService.createPaymentCard(createPaymentCardDto));
     }
 
     @PatchMapping("/update/{id}")
