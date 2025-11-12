@@ -1,4 +1,4 @@
-package practical.task.userservice.repositories;
+package practical.task.userservice.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
