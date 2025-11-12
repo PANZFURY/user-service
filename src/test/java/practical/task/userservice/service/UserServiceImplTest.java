@@ -131,4 +131,24 @@ class UserServiceImplTest {
         verify(userRepository, never()).save(any());
     }
 
+    @Test
+    void testDeleteUserById_success() {
+        when(userRepository.findUserById(1L)).thenReturn(Optional.of(user));
+        when(paymentCardRepository.findAllByUser(user)).thenReturn(List.of());
+
+        userService.deleteUserById(1L);
+
+        verify(userRepository).findUserById(1L);
+        verify(paymentCardRepository).findAllByUser(user);
+        verify(userRepository).save(argThat(u -> !u.isActive() && u.getId().equals(1L)));
+    }
+
+    @Test
+    void testDeleteUserById_notFound() {
+        when(userRepository.findUserById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> userService.deleteUserById(1L));
+        verify(userRepository, never()).delete(any(User.class));
+    }
+
 }
