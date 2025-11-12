@@ -1,6 +1,7 @@
 package practical.task.userservice.service;
 
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -209,6 +210,37 @@ class PaymentCardServiceImplTest {
         verify(paymentCardRepository, never()).save(any());
     }
 
+    @Test
+    void testDeletePaymentCardById_success() {
+        Long cardId = 1L;
+
+        PaymentCard card = new PaymentCard();
+        card.setId(cardId);
+        card.setActive(true);
+
+        when(paymentCardRepository.findPaymentCardById(cardId)).thenReturn(Optional.of(card));
+        when(paymentCardRepository.save(any(PaymentCard.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        paymentCardService.deletePaymentCardById(cardId);
+
+        verify(paymentCardRepository).findPaymentCardById(cardId);
+        verify(paymentCardRepository).save(argThat(saved ->
+                saved.getId().equals(cardId) && !saved.isActive()
+        ));
+    }
+
+    @Test
+    void testDeletePaymentCardById_notFound() {
+        Long cardId = 1L;
+
+        when(paymentCardRepository.findPaymentCardById(cardId)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> paymentCardService.deletePaymentCardById(cardId));
+
+        verify(paymentCardRepository).findPaymentCardById(cardId);
+        verify(paymentCardRepository, never()).save(any());
+    }
 
 }
 
