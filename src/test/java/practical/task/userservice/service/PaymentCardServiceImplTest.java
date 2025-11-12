@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -111,5 +112,104 @@ class PaymentCardServiceImplTest {
         verify(paymentCardRepository, never()).save(any());
     }
 
+    @Test
+    void testUpdatePaymentCardById_success() {
+        Long id = 1L;
+
+        User existingUser = new User();
+        existingUser.setId(1L);
+        existingUser.setName("Britney");
+        existingUser.setSurname("Spears");
+
+        User newUser = new User();
+        newUser.setId(2L);
+        newUser.setName("Taylor");
+        newUser.setSurname("Swift");
+
+        PaymentCard existingCard = new PaymentCard();
+        existingCard.setId(id);
+        existingCard.setUser(existingUser);
+        existingCard.setNumber("5555-6666-7777-8888");
+        existingCard.setHolder("Spears Britney");
+        existingCard.setExpirationDate(LocalDate.of(2030, 1, 1));
+        existingCard.setActive(true);
+
+        UpdatePaymentCardDto updateDto = new UpdatePaymentCardDto(
+                2L,
+                "1111-2222-3333-4444",
+                LocalDate.of(2031, 12, 12),
+                false
+        );
+
+        when(paymentCardRepository.findPaymentCardById(id)).thenReturn(Optional.of(existingCard));
+        when(paymentCardRepository.findPaymentCardByNumber(updateDto.number())).thenReturn(Optional.empty());
+        when(userRepository.findUserById(updateDto.userId())).thenReturn(Optional.of(newUser));
+
+        when(paymentCardRepository.save(any(PaymentCard.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        PaymentCardResponse expectedResponse = new PaymentCardResponse(
+                id,
+                "Swift Taylor",
+                updateDto.number(),
+                updateDto.expirationDate(),
+                newUser.getId()
+        );
+
+        when(paymentCardMapper.toPaymentCardResponse(any(PaymentCard.class))).thenReturn(expectedResponse);
+
+        PaymentCardResponse result = paymentCardService.updatePaymentCardById(id, updateDto);
+
+        assertNotNull(result);
+        assertEquals("Swift Taylor", result.holder());
+        assertEquals(updateDto.number(), result.number());
+        assertEquals(updateDto.expirationDate(), result.expirationDate());
+        assertEquals(updateDto.userId(), result.userId());
+
+        verify(paymentCardRepository).findPaymentCardById(id);
+        verify(paymentCardRepository).findPaymentCardByNumber(updateDto.number());
+        verify(userRepository).findUserById(updateDto.userId());
+        verify(paymentCardRepository).save(argThat(saved ->
+                saved.getId().equals(id)
+                        && saved.getUser().equals(newUser)
+                        && saved.getNumber().equals(updateDto.number())
+                        && saved.getHolder().equals("Swift Taylor")
+                        && saved.getExpirationDate().equals(updateDto.expirationDate())
+                        && !saved.isActive()
+        ));
+        verify(paymentCardMapper).toPaymentCardResponse(any(PaymentCard.class));
+        verifyNoMoreInteractions(paymentCardRepository);
+    }
+
+    @Test
+    void testUpdatePaymentCardById_numberAlreadyExists() {
+        Long id = 1L;
+        PaymentCard existingCard = new PaymentCard();
+        existingCard.setId(id);
+
+        PaymentCard otherCard = new PaymentCard();
+        otherCard.setId(2L);
+        otherCard.setNumber("1111-2222-3333-4444");
+
+        when(paymentCardRepository.findPaymentCardById(id)).thenReturn(Optional.of(existingCard));
+        when(paymentCardRepository.findPaymentCardByNumber("1111-2222-3333-4444"))
+                .thenReturn(Optional.of(otherCard));
+
+        UpdatePaymentCardDto updateDto = new UpdatePaymentCardDto(
+                1L,
+                "1111-2222-3333-4444",
+                LocalDate.of(2031, 12, 12),
+                true
+        );
+
+        assertThrows(EntityExistsException.class,
+                () -> paymentCardService.updatePaymentCardById(id, updateDto));
+
+        verify(paymentCardRepository).findPaymentCardById(id);
+        verify(paymentCardRepository).findPaymentCardByNumber("1111-2222-3333-4444");
+        verify(paymentCardRepository, never()).save(any());
+    }
+
+
 }
+
 
