@@ -1,11 +1,11 @@
-package practical.task.userservice.mappers;
+package practical.task.userservice.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import practical.task.userservice.dtos.requests.paymentCardDtos.CreatePaymentCardDto;
-import practical.task.userservice.dtos.responses.PaymentCardResponse;
-import practical.task.userservice.models.PaymentCard;
+import practical.task.userservice.dto.request.paymentCardDto.CreatePaymentCardDto;
+import practical.task.userservice.dto.response.PaymentCardResponse;
+import practical.task.userservice.model.PaymentCard;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PaymentCardMapper {
