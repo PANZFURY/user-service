@@ -17,7 +17,7 @@ public class PaymentCard extends Auditable{
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_ixd", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @NonNull
