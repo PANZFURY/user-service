@@ -1,4 +1,4 @@
-package practical.task.userservice.dtos.responses;
+package practical.task.userservice.dto.response;
 
 import java.time.LocalDate;
 

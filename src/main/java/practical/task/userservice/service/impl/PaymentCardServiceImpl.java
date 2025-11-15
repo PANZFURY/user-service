@@ -1,25 +1,26 @@
-package practical.task.userservice.service;
+package practical.task.userservice.service.impl;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import practical.task.userservice.dto.request.paymentCardDto.CreatePaymentCardDto;
 import practical.task.userservice.dto.request.paymentCardDto.UpdatePaymentCardDto;
 import practical.task.userservice.dto.response.PaymentCardResponse;
+import practical.task.userservice.exception.ExceedLimitOfCards;
 import practical.task.userservice.mapper.PaymentCardMapper;
 import practical.task.userservice.model.PaymentCard;
 import practical.task.userservice.model.User;
 import practical.task.userservice.repository.PaymentCardRepository;
 import practical.task.userservice.repository.UserRepository;
+import practical.task.userservice.service.PaymentCardService;
 import practical.task.userservice.util.CreateEntityHelper;
 
 @Service
-public class PaymentCardServiceImpl implements PaymentCardService{
+public class PaymentCardServiceImpl implements PaymentCardService {
 
     private final PaymentCardRepository paymentCardRepository;
     private final PaymentCardMapper paymentCardMapper;
@@ -56,7 +57,7 @@ public class PaymentCardServiceImpl implements PaymentCardService{
                 .ifPresent(c -> {throw new EntityExistsException("PaymentCard already exists");});
 
         long countCardsByUser = paymentCardRepository.countByUserId(createPaymentCardDto.userId());
-        if (countCardsByUser >= 5) throw new RuntimeException("User can not have more than 5 cards");
+        if (countCardsByUser >= 5) throw new ExceedLimitOfCards("User can not have more than 5 cards");
 
         PaymentCard paymentCard = paymentCardMapper.fromPaymentCardCreateDto(createPaymentCardDto);
 
@@ -107,8 +108,5 @@ public class PaymentCardServiceImpl implements PaymentCardService{
         paymentCard.setActive(false);
         paymentCardRepository.save(paymentCard);
 
-        /*
-        paymentCardRepository.delete(paymentCard);
-         */
     }
 }

@@ -1,4 +1,4 @@
-package practical.task.userservice.models;
+package practical.task.userservice.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -17,7 +17,7 @@ public class PaymentCard extends Auditable{
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_ixd", nullable = false)
     private User user;
 
     @NonNull
