@@ -7,6 +7,7 @@ public record UserResponse(
         String name,
         String surname,
         LocalDate birthDate,
-        String email
+        String email,
+        boolean active
 ) {
 }
