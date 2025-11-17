@@ -1,4 +1,4 @@
-package practical.task.userservice.models;
+package practical.task.userservice.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class PaymentCard extends Auditable{
 
     @NonNull
     @Column(unique = true)
-    private Long number;
+    private String number;
 
     private String holder;
 
