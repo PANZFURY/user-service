@@ -61,8 +61,9 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.fromUserCreateDto(userCreateDto);
 
         User candidate = userRepository.findByEmail(userCreateDto.email())
-                        .orElseThrow(() -> new EntityExistsException("This email is already used"));
-
+                        .ifPresent(u -> { 
+                throw new EntityExistsException("This email is already used"); 
+            });
         userRepository.save(user);
 
         return userMapper.toUserResponse(user);
