@@ -58,17 +58,17 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserResponse createUser(UserCreateDto userCreateDto) {
+        if (userRepository.findByEmail(userCreateDto.email()).isPresent()) {
+            throw new EntityExistsException("This email is already used");
+        }
+
         User user = userMapper.fromUserCreateDto(userCreateDto);
 
-        User candidate = userRepository.findByEmail(userCreateDto.email())
-                        .ifPresent(u -> { 
-                throw new EntityExistsException("This email is already used"); 
-            });
         userRepository.save(user);
 
         return userMapper.toUserResponse(user);
     }
-
+    
     @Transactional
     @Override
     public UserResponse updateUserById(Long id, UserUpdateDto userUpdateDto) {
