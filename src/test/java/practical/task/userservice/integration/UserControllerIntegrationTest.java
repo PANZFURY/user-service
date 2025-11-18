@@ -22,7 +22,11 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                properties = {
+                        "spring.cache.type=none"
+                }
+)
 class UserControllerIntegrationTest {
 
     @Container
@@ -53,24 +57,31 @@ class UserControllerIntegrationTest {
 
     @Test
     void testFullUserFlow() {
+
+        //given
         UserCreateDto createDto = new UserCreateDto(
                 "John",
                 "Doe",
                 LocalDate.of(1990, 1, 1),
                 "john.doe@example.com"
         );
+
         ResponseEntity<UserResponse> createResponse = restTemplate.postForEntity(
-                baseUrl + "/registration", createDto, UserResponse.class
+                baseUrl + "/registration",
+                createDto,
+                UserResponse.class
         );
+
         assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
         assertNotNull(createResponse.getBody());
+
         Long userId = createResponse.getBody().id();
 
+        //when
         ResponseEntity<UserResponse> getResponse = restTemplate.getForEntity(
-                baseUrl + "/get/" + userId, UserResponse.class
+                baseUrl + "/get/" + userId,
+                UserResponse.class
         );
-        assertEquals(HttpStatus.OK, getResponse.getStatusCode());
-        assertEquals("John", getResponse.getBody().name());
 
         UserUpdateDto updateDto = new UserUpdateDto(
                 "Johnny",
@@ -78,17 +89,17 @@ class UserControllerIntegrationTest {
                 null,
                 null
         );
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<UserUpdateDto> requestEntity = new HttpEntity<>(updateDto, headers);
+        HttpEntity<UserUpdateDto> updateRequest = new HttpEntity<>(updateDto, headers);
+
         ResponseEntity<UserResponse> updateResponse = restTemplate.exchange(
                 baseUrl + "/update/" + userId,
                 HttpMethod.PATCH,
-                requestEntity,
+                updateRequest,
                 UserResponse.class
         );
-        assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
-        assertEquals("Johnny", updateResponse.getBody().name());
 
         ResponseEntity<Void> deleteResponse = restTemplate.exchange(
                 baseUrl + "/delete/" + userId,
@@ -96,12 +107,23 @@ class UserControllerIntegrationTest {
                 null,
                 Void.class
         );
-        assertEquals(HttpStatus.NO_CONTENT, deleteResponse.getStatusCode());
 
         ResponseEntity<UserResponse> afterDeleteResponse = restTemplate.getForEntity(
-                baseUrl + "/get/" + userId, UserResponse.class
+                baseUrl + "/get/" + userId,
+                UserResponse.class
         );
+
+        //then
+        assertEquals(HttpStatus.OK, getResponse.getStatusCode());
+        assertEquals("John", getResponse.getBody().name());
+
+        assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
+        assertEquals("Johnny", updateResponse.getBody().name());
+
+        assertEquals(HttpStatus.NO_CONTENT, deleteResponse.getStatusCode());
+
         assertEquals(HttpStatus.OK, afterDeleteResponse.getStatusCode());
+        assertFalse(afterDeleteResponse.getBody().active());
     }
 }
 

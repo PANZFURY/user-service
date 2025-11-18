@@ -23,7 +23,11 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                properties = {
+                    "spring.cache.type=none"
+                }
+)
 public class PaymentCardControllerIntegrationTest {
 
     @Container
@@ -56,6 +60,8 @@ public class PaymentCardControllerIntegrationTest {
 
     @Test
     void testFullPaymentCardFlow() {
+
+        //given
         UserCreateDto createUserDto = new UserCreateDto(
                 "Alice",
                 "Smith",
@@ -64,7 +70,9 @@ public class PaymentCardControllerIntegrationTest {
         );
 
         ResponseEntity<UserResponse> userResp = restTemplate.postForEntity(
-                userUrl + "/registration", createUserDto, UserResponse.class
+                userUrl + "/registration",
+                createUserDto,
+                UserResponse.class
         );
 
         assertEquals(HttpStatus.CREATED, userResp.getStatusCode());
@@ -78,18 +86,18 @@ public class PaymentCardControllerIntegrationTest {
         );
 
         ResponseEntity<PaymentCardResponse> createCardResp = restTemplate.postForEntity(
-                cardUrl + "/registration", createCardDto, PaymentCardResponse.class
+                cardUrl + "/registration",
+                createCardDto,
+                PaymentCardResponse.class
         );
 
         assertEquals(HttpStatus.CREATED, createCardResp.getStatusCode());
         assertNotNull(createCardResp.getBody());
         Long cardId = createCardResp.getBody().id();
 
+        //when
         ResponseEntity<PaymentCardResponse> getResp =
                 restTemplate.getForEntity(cardUrl + "/get/" + cardId, PaymentCardResponse.class);
-
-        assertEquals(HttpStatus.OK, getResp.getStatusCode());
-        assertEquals("1234-5678-9999-1111", getResp.getBody().number());
 
         UpdatePaymentCardDto updateDto = new UpdatePaymentCardDto(
                 null,
@@ -109,9 +117,6 @@ public class PaymentCardControllerIntegrationTest {
                 PaymentCardResponse.class
         );
 
-        assertEquals(HttpStatus.OK, updateResp.getStatusCode());
-        assertEquals("5555-2222-1111-9999", updateResp.getBody().number());
-
         ResponseEntity<Void> deleteResp = restTemplate.exchange(
                 cardUrl + "/delete/" + cardId,
                 HttpMethod.DELETE,
@@ -119,11 +124,20 @@ public class PaymentCardControllerIntegrationTest {
                 Void.class
         );
 
-        assertEquals(HttpStatus.NO_CONTENT, deleteResp.getStatusCode());
-
         ResponseEntity<PaymentCardResponse> afterDelete =
                 restTemplate.getForEntity(cardUrl + "/get/" + cardId, PaymentCardResponse.class);
 
+        //then
+        assertEquals(HttpStatus.OK, getResp.getStatusCode());
+        assertEquals("1234-5678-9999-1111", getResp.getBody().number());
+
+        assertEquals(HttpStatus.OK, updateResp.getStatusCode());
+        assertEquals("5555-2222-1111-9999", updateResp.getBody().number());
+
+        assertEquals(HttpStatus.NO_CONTENT, deleteResp.getStatusCode());
+
         assertEquals(HttpStatus.OK, afterDelete.getStatusCode());
+        assertFalse(afterDelete.getBody().active());
     }
+
 }

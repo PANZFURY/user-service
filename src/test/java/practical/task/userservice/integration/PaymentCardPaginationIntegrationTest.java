@@ -1,5 +1,7 @@
 package practical.task.userservice.integration;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,11 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+            properties = {
+                   "spring.cache.type=none"
+            }
+)
 class PaymentCardPaginationIntegrationTest {
 
     @Container
@@ -63,7 +69,9 @@ class PaymentCardPaginationIntegrationTest {
     }
 
     @Test
-    void testGetAllPaymentCardsWithPagination() {
+    void testGetAllPaymentCardsWithPagination() throws Exception {
+
+        //given
         for (int i = 1; i <= 12; i++) {
             CreatePaymentCardDto cardDto = new CreatePaymentCardDto(
                     userId,
@@ -74,22 +82,31 @@ class PaymentCardPaginationIntegrationTest {
             restTemplate.postForEntity(cardUrl + "/registration", cardDto, PaymentCardResponse.class);
         }
 
+        ObjectMapper mapper = new ObjectMapper();
+
+        //when
         ResponseEntity<String> page1 = restTemplate.getForEntity(
                 cardUrl + "/get/all?page=0&size=10",
                 String.class
         );
 
-        assertEquals(HttpStatus.OK, page1.getStatusCode());
-        assertTrue(page1.getBody().contains("\"size\":10"));
-        assertTrue(page1.getBody().contains("\"number\":0"));
+        JsonNode json1 = mapper.readTree(page1.getBody());
 
         ResponseEntity<String> page2 = restTemplate.getForEntity(
                 cardUrl + "/get/all?page=1&size=10",
                 String.class
         );
 
+        JsonNode json2 = mapper.readTree(page2.getBody());
+
+        //then
+        assertEquals(HttpStatus.OK, page1.getStatusCode());
+        assertEquals(10, json1.get("size").asInt());
+        assertEquals(0, json1.get("number").asInt());
+
         assertEquals(HttpStatus.OK, page2.getStatusCode());
-        assertTrue(page2.getBody().contains("\"number\":1"));
+        assertEquals(1, json2.get("number").asInt());
     }
+
 }
 
