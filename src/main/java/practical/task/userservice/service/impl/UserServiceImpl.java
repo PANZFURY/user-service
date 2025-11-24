@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.toUserResponse(user);
     }
-
+    
     @Transactional
     @Override
     public UserResponse updateUserById(Long id, UserUpdateDto userUpdateDto) {
@@ -98,15 +98,18 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void deleteUserById(Long id) {
+    public UserResponse deleteUserById(Long id) {
         User user = userRepository.findUserById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User was not found"));
 
         user.setActive(false);
+
         List<PaymentCard> paymentCards = paymentCardRepository.findAllByUser(user);
-        paymentCards.forEach(paymentCard -> {paymentCard.setActive(false);});
+        paymentCards.forEach(card -> card.setActive(false));
+        paymentCardRepository.saveAll(paymentCards);
 
-        userRepository.save(user);
+        User saved = userRepository.save(user);
 
+        return userMapper.toUserResponse(saved);
     }
 }
