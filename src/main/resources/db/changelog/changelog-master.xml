@@ -9,5 +9,4 @@
     <include file="db/changelog/add-users-indexes.xml"/>
     <include file="db/changelog/add-payment-cards-indexes.xml"/>
     <include file="db/changelog/edit-column-number-in-payment-cards.xml"/>
-
 </databaseChangeLog>

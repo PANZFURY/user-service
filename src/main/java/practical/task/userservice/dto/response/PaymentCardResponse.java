@@ -7,6 +7,7 @@ public record PaymentCardResponse(
         String holder,
         String number,
         LocalDate expirationDate,
-        Long userId
+        Long userId,
+        boolean active
 ) {
 }
