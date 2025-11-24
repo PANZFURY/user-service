@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: MyApplication
+
+  profiles:
+    default: "local"
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml
+    enabled: true
