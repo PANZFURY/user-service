@@ -12,6 +12,6 @@ public interface UserService {
     UserResponse getOneById(Long id);
     UserResponse createUser(UserCreateDto userCreateDto);
     UserResponse updateUserById(Long id, UserUpdateDto userUpdateDto);
-    void deleteUserById(Long id);
+    UserResponse deleteUserById(Long id);
 
 }
