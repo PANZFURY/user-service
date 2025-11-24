@@ -9,7 +9,7 @@ public record UpdatePaymentCardDto(
 
         LocalDate expirationDate,
 
-        boolean active
+        Boolean active
 ) {
 
 }

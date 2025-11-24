@@ -37,6 +37,5 @@ public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long> 
     void updateActiveStatus(@Param("id") Long id, @Param("active") boolean active);
 
     List<PaymentCard> findAllByUser(User user);
-
 }
 
