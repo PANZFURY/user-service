@@ -3,7 +3,7 @@ spring:
     name: MyApplication
 
   profiles:
-    default: "local"
+    default: "docker"
 
   jpa:
     hibernate:
