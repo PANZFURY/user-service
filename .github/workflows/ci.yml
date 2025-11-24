@@ -38,17 +38,22 @@ jobs:
       - name: Run Maven Build and Tests
         run: mvn -B clean verify
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v2
+      - name: Run SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: mvn sonar:sonar \
+          -Dsonar.projectKey=user-service \
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: target/surefire-reports/
+
+
 
   docker-build-push:
     needs: build-test-analyze
