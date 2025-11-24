@@ -38,11 +38,15 @@ jobs:
       - name: Run Maven Build and Tests
         run: mvn -B clean verify
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v2
+      - name: Run SonarCloud analysis
+        if: ${{ secrets.SONAR_TOKEN && secrets.SONAR_HOST_URL }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          sonar-scanner \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
