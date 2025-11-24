@@ -3,6 +3,8 @@ package practical.task.userservice.service;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "users", key = "#id")
     public UserResponse getOneById(Long id) {
         User user = userRepository.findUserById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
@@ -70,6 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+    @CachePut(value = "users", key = "#id")
     public UserResponse updateUserById(Long id, UserUpdateDto userUpdateDto) {
         User user = userRepository.findUserById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User was not found"));
@@ -92,6 +96,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+    @CachePut(value = "users", key = "#id")
     public void deleteUserById(Long id) {
         User user = userRepository.findUserById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User was not found"));
