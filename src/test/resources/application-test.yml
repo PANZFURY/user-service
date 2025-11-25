@@ -8,11 +8,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-
-  cache:
-    type: none
-
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
