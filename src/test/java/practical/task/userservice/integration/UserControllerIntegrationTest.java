@@ -1,6 +1,5 @@
 package practical.task.userservice.integration;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +119,7 @@ class UserControllerIntegrationTest {
         assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
         assertEquals("Johnny", updateResponse.getBody().name());
 
-        assertEquals(HttpStatus.NO_CONTENT, deleteResponse.getStatusCode());
+        assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
 
         assertEquals(HttpStatus.OK, afterDeleteResponse.getStatusCode());
         assertFalse(afterDeleteResponse.getBody().active());
