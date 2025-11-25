@@ -8,3 +8,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+
+  cache:
+    type: none
+
+  data:
+    redis:
+      host: localhost
+      port: 0
